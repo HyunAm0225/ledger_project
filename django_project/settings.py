@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "user",
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,4 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "USER_ID_FIELD": "id",
 }
+AUTH_USER_MODEL = "user.User"
