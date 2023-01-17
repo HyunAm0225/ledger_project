@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from base.models import BaseModel
+from user.managers import UserManager
 
 
 class User(BaseModel, AbstractUser):
@@ -9,6 +10,8 @@ class User(BaseModel, AbstractUser):
     password = models.CharField("password", max_length=128)
     REQUIRED_FIELDS = []
     USERNAME_FIELD = "email"
+
+    objects = UserManager()
 
     class Meta:
         verbose_name = "사용자"

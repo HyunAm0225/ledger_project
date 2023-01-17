@@ -139,7 +139,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10000,
-    "EXCEPTION_HANDLER": "server.base.error_handler.exception_format_handler",
+    "EXCEPTION_HANDLER": "base.error_handler.exception_format_handler",
 }
 # JWT
 SIMPLE_JWT = {
