@@ -35,3 +35,31 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "created_at", "updated_at"]
+
+
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.CharField(label="email")
+    password = serializers.CharField(
+        label="Password",
+        style={
+            "input_type": "password",
+        },
+        trim_whitespace=False,
+    )
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        if email and password:
+            user = authenticate(
+                request=self.context.get("request"), email=email, password=password
+            )
+
+            if not user:
+                raise serializers.ValidationError(
+                    error_messages.AUTH_LOGIN_FAILED, code="AUTH_LOGIN_FAILED"
+                )
+        attrs["user"] = user
+
+        return attrs
