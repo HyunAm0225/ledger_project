@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory
 from schema import And, Schema
@@ -28,7 +27,7 @@ class LedgerApiTestCase(APITestCase):
         cls.login_url = "/api/v1/users/login/"
         cls.logout_url = "/api/v1/users/logout/"
         cls.ledger_url = "/api/v1/ledgers/"
-        User.objects.create(email="test@test.com", password=make_password("test001!"))
+        User.objects.create_user(email="test@test.com", password="test001!")
         cls.test_user = User.objects.get(email="test@test.com")
 
     def setUp(self):
@@ -122,3 +121,45 @@ class LedgerApiTestCase(APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         assert response_schema.validate(res.json())
+
+    def test_회계_디테일(self):
+        self.test_회계_작성()
+        ledger = Ledger.objects.filter(is_active=True).first()
+        ledger_info_schema = Schema(
+            {
+                "id": And(int, lambda x: x > 0),
+                "user": self.test_user.id,
+                "memo": "hello",
+                "amount": 15000,
+                "created_at": And(str, len),
+                "updated_at": And(str, len),
+                "is_active": True,
+            }
+        )
+        res = self.client.get(f"{self.ledger_url}{ledger.id}/", format="json")
+        response_schema = Schema(
+            {
+                "result": True,
+                "data": ledger_info_schema,
+            }
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        assert response_schema.validate(res.json())
+
+    def test_다른_유저로_요청(self):
+        self.test_회계_작성()
+        ledger = Ledger.objects.filter(is_active=True).first()
+        user = User.objects.create_user(email="other@test.com", password="test001!")
+        self.refresh_access_token(user)
+        res = self.client.get(f"{self.ledger_url}{ledger.id}/", format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "NOT_WRITER")
+        res = self.client.delete(f"{self.ledger_url}{ledger.pk}/", format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "NOT_WRITER")
+        res = self.client.get(f"{self.ledger_url}{ledger.id}/", format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "NOT_WRITER")
+        res = self.client.patch(f"{self.ledger_url}{ledger.pk}/", format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "NOT_WRITER")

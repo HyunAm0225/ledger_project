@@ -87,3 +87,13 @@ class LedgerViewSet(ModelViewSet):
         queryset = self.queryset.filter(user=user, is_active=True)
         serializers = self.serializer_class(instance=queryset, many=True)
         return Response({"result": True, "data": serializers.data}, status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        user = request.user
+        ledger = get_object_or_404(Ledger, id=pk)
+        if ledger.user != user:
+            raise ValidationError(error_messages.NOT_WRITER, code="NOT_WRITER")
+        return Response(
+            {"result": True, "data": self.serializer_class(instance=ledger).data},
+            status=status.HTTP_200_OK,
+        )
