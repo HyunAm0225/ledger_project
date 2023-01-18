@@ -81,3 +81,9 @@ class LedgerViewSet(ModelViewSet):
             {"result": True, "data": self.serializer_class(instance=ledger).data},
             status=status.HTTP_200_OK,
         )
+
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        queryset = self.queryset.filter(user=user, is_active=True)
+        serializers = self.serializer_class(instance=queryset, many=True)
+        return Response({"result": True, "data": serializers.data}, status.HTTP_200_OK)

@@ -99,3 +99,26 @@ class LedgerApiTestCase(APITestCase):
         res = self.client.patch(f"{self.ledger_url}{ledger.pk}/restore/", format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(Ledger.objects.filter(is_active=True).count(), 1)
+
+    def test_회계_리스트(self):
+        self.test_회계_작성()
+        res = self.client.get(self.ledger_url, format="json")
+        ledger_info_schema = Schema(
+            {
+                "id": And(int, lambda x: x > 0),
+                "user": self.test_user.id,
+                "memo": "hello",
+                "amount": 15000,
+                "created_at": And(str, len),
+                "updated_at": And(str, len),
+                "is_active": True,
+            }
+        )
+        response_schema = Schema(
+            {
+                "result": True,
+                "data": [ledger_info_schema],
+            }
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        assert response_schema.validate(res.json())
