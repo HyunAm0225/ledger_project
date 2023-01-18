@@ -1,9 +1,11 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.api.serializers import (
@@ -12,6 +14,7 @@ from user.api.serializers import (
     UserLoginSerializer,
 )
 from user.models import User
+from utils import error_messages
 
 
 class AuthViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
@@ -69,5 +72,26 @@ class AuthViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
             {
                 "token": token_dict,
                 "user": user_data,
+            }
+        )
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="logout",
+    )
+    def logout(self, request):
+        try:
+            token = RefreshToken(request.data.get("refresh"))
+            token.blacklist()
+        except TokenError:
+            raise ValidationError(
+                error_messages.AUTH_LOGOUT_FAILED, code="AUTH_LOGOUT_FAILED"
+            )
+
+        return Response(
+            {
+                "result": True,
             }
         )

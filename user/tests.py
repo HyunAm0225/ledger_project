@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory
-from schema import And, Or, Schema
+from schema import And, Schema
 
 
 class UserApiTestCase(APITestCase):
@@ -10,6 +10,7 @@ class UserApiTestCase(APITestCase):
         cls.factory = APIRequestFactory()
         cls.register_url = "/api/v1/users/register/"
         cls.login_url = "/api/v1/users/login/"
+        cls.logout_url = "/api/v1/users/logout/"
 
     def test_유저_회원가입_성공(self):
         token_info_schema = Schema(
@@ -72,3 +73,25 @@ class UserApiTestCase(APITestCase):
         res = self.client.post(self.login_url, data=data, format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         assert response_schema.validate(res.json())
+
+    def test_로그아웃(self):
+        self.test_유저_회원가입_성공()
+        data = {
+            "email": "test@test.com",
+            "password": "test123!",
+        }
+        res = self.client.post(self.login_url, data=data, format="json")
+        refresh_token = res.json()["token"].get("refresh_token")
+        access_token = res.json()["token"].get("access_token")
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
+
+        logout_data = {"refresh": refresh_token}
+        res = self.client.post(self.logout_url, data=logout_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()["result"], True)
+        re_logout_res = self.client.post(
+            self.logout_url, data=logout_data, format="json"
+        )
+        self.assertEqual(re_logout_res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(re_logout_res.json()["error"], "AUTH_LOGOUT_FAILED")
