@@ -12,7 +12,7 @@ class Ledger(BaseModel):
         on_delete=models.CASCADE,
         related_name="ledger",
     )
-    isActive = models.BooleanField(verbose_name="활성화 여부")
+    isActive = models.BooleanField(verbose_name="활성화 여부", default=True)
 
     class Meta:
         verbose_name = "회계"
