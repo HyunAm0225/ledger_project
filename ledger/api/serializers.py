@@ -13,6 +13,7 @@ class LedgerSerializer(serializers.ModelSerializer):
             "memo",
             "created_at",
             "updated_at",
+            "is_active",
         ]
         extra_kwargs = {
             "user": {"read_only": True},

@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory
 from schema import And, Schema
 
+from ledger.models import Ledger
 from user.models import User
 
 
@@ -42,6 +43,7 @@ class LedgerApiTestCase(APITestCase):
                 "amount": 15000,
                 "created_at": And(str, len),
                 "updated_at": And(str, len),
+                "is_active": True,
             }
         )
         data = {"memo": "hello", "amount": 15000}
@@ -55,3 +57,38 @@ class LedgerApiTestCase(APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         assert response_schema.validate(res.json())
+
+    def test_회계_수정(self):
+        self.test_회계_작성()
+        ledger = Ledger.objects.all().first()
+        ledger_info_schema = Schema(
+            {
+                "id": And(int, lambda x: x > 0),
+                "user": self.test_user.id,
+                "memo": "수정완료!",
+                "amount": 7500,
+                "created_at": And(str, len),
+                "updated_at": And(str, len),
+                "is_active": True,
+            }
+        )
+        data = {"memo": "수정완료!", "amount": 7500}
+        res = self.client.patch(
+            f"{self.ledger_url}{ledger.pk}/", data=data, format="json"
+        )
+
+        response_schema = Schema(
+            {
+                "result": True,
+                "data": ledger_info_schema,
+            }
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        assert response_schema.validate(res.json())
+
+    def test_회계_삭제(self):
+        self.test_회계_작성()
+        ledger = Ledger.objects.all().first()
+        res = self.client.delete(f"{self.ledger_url}{ledger.pk}/", format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(Ledger.objects.filter(is_active=False).count(), 1)
