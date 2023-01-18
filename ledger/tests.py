@@ -92,3 +92,10 @@ class LedgerApiTestCase(APITestCase):
         res = self.client.delete(f"{self.ledger_url}{ledger.pk}/", format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(Ledger.objects.filter(is_active=False).count(), 1)
+
+    def test_회계_복구(self):
+        self.test_회계_삭제()
+        ledger = Ledger.objects.filter(is_active=False).first()
+        res = self.client.patch(f"{self.ledger_url}{ledger.pk}/restore/", format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(Ledger.objects.filter(is_active=True).count(), 1)

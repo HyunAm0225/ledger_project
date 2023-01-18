@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -51,6 +52,29 @@ class LedgerViewSet(ModelViewSet):
                 error_messages.LEDGER_IS_NOT_ACTIVE, code="LEDGER_IS_NOT_ACTIVE"
             )
         ledger.is_active = False
+        ledger.save()
+
+        return Response(
+            {"result": True, "data": self.serializer_class(instance=ledger).data},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(
+        detail=True,
+        methods=["PATCH"],
+        permission_classes=[IsAuthenticated],
+        url_path="restore",
+    )
+    def restore(self, request, pk=None, *args, **kwargs):
+        user = request.user
+        ledger = get_object_or_404(Ledger, id=pk)
+        if ledger.user != user:
+            raise ValidationError(error_messages.NOT_WRITER, code="NOT_WRITER")
+        if ledger.is_active:
+            raise ValidationError(
+                error_messages.LEDGER_IS_ACTIVE, code="LEDGER_IS_ACTIVE"
+            )
+        ledger.is_active = True
         ledger.save()
 
         return Response(
