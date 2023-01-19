@@ -16,3 +16,4 @@ class Ledger(BaseModel):
 
     class Meta:
         verbose_name = "가계부"
+        ordering = ["-created_at"]
