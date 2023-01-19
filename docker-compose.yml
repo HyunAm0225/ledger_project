@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./docker_file/django/Dockerfile
+    image: ledger_server
+    container_name: ledger_django_project
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    command: /start
