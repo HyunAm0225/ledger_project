@@ -6,9 +6,9 @@
 
 ```json
 {
-	"access_token": str,
-	"refresh_token": str,
-	"expires_at": int,
+  "access_token": str,
+  "refresh_token": str,
+  "expires_at": int,
 }
 ```
 
@@ -16,10 +16,10 @@
 
 ```json
 {
-	"id": int,
-	"email": str,
-	"created_at": str,
-	"updated_at": str,
+  "id": int,
+  "email": str,
+  "created_at": str,
+  "updated_at": str,
 }
 ```
 
@@ -31,10 +31,9 @@
 **request.body**
 
 ```json
-{
-	"email" : str,
-	"password" : str,
-	"validate_password": str,
+{  
+  "email" : str,
+  "password" : str
 }
 ```
 
@@ -42,8 +41,8 @@ response
 
 ```json
 {
-	"token" : <token_info>
-	"user" : <user_info>
+  "token" : <token_info>,
+  "user" : <user_info>
 }
 ```
 
@@ -56,8 +55,8 @@ request.body
 
 ```json
 {
-	"email" : str,
-	"password" : str
+  "email" : str,
+  "password" : str
 }
 ```
 
@@ -65,8 +64,8 @@ res
 
 ```json
 {
-	"user" : <user_info>,
-	"token_info" : <token_info>
+  "user" : <user_info>,
+  "token_info" : <token_info>
 }
 ```
 
@@ -76,11 +75,11 @@ res
 - [POST] /users/logout
 - isAuthenticated
 
-request.body
+**request.body**
 
 ```json
 {
-	"refresh_token" : str,
+  "refresh_token" : str,
 }
 ```
 
@@ -88,7 +87,7 @@ response
 
 ```json
 {
-	"result" : True,
+  "result" : True,
 }
 ```
 
@@ -98,13 +97,13 @@ response
 
 ```json
 {
-	"id": int,
-	"user": int,
-	"memo": str,
-	"amount": int,
-	"created_at": str,
-	"updated_at": str,
-	"is_active": bool,
+  "id": int,
+  "user": int,
+  "memo": str,
+  "amount": int,
+  "created_at": str,
+  "updated_at": str,
+  "is_active": bool,
 }
 ```
 
@@ -117,8 +116,8 @@ response
 
 ```json
 {
-	"amount" : int, // biginteger field
-	"memo" : str
+  "amount" : int, // biginteger field
+  "memo" : str
 }
 ```
 
@@ -126,8 +125,8 @@ response
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : <ledger_info>
+  "result" : bool,
+  "ledgers" : <ledger_info>
 }
 ```
 
@@ -140,8 +139,8 @@ request.body
 
 ```json
 {
-	"amount" : int, // nullable
-	"memo" : str // nullable
+  "amount" : int, // nullable
+  "memo" : str // nullable
 }
 ```
 
@@ -149,8 +148,8 @@ request.body
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : ledger_info
+  "result" : bool,
+  "ledgers" : ledger_info
 }
 ```
 
@@ -171,8 +170,8 @@ request.body
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : <ledger_info>
+  "result" : bool,
+  "ledgers" : <ledger_info>
 }
 ```
 
@@ -193,8 +192,8 @@ request.body
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : <ledger_info>
+  "result" : bool,
+  "ledgers" : <ledger_info>
 }
 ```
 
@@ -216,8 +215,8 @@ request.body
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : [<ledger_info>]
+  "result" : bool,
+  "ledgers" : [<ledger_info>]
 }
 ```
 
@@ -239,7 +238,7 @@ request.body
 
 ```json
 {
-	"result" : bool,
-	"ledgers" : <ledger_info>
+  "result" : bool,
+  "ledgers" : <ledger_info>
 }
 ```
