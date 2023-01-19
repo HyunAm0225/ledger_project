@@ -40,7 +40,8 @@ docker-compose run django python manage.py test
 ### Users.register
 
 - 회원가입 API
-- [POST] /users/register/
+- **[POST]** /users/register/
+- permission_classes :  AllowAny
 
 **request.body**
 
@@ -63,7 +64,8 @@ response
 ### Users.Login
 
 - 로그인 API
-- [POST] /users/login/
+- **[POST]** /users/login/
+- permission_classes :  AllowAny
 
 request.body
 
@@ -86,8 +88,8 @@ res
 ### Users.Logout
 
 - 로그아웃 API
-- [POST] /users/logout
-- isAuthenticated
+- **[POST]** /users/logout/
+- permission_classes :  IsAuthenticated
 
 **request.body**
 
@@ -124,7 +126,8 @@ response
 ### [POST] ledegers
 
 - 금액, 메모 작성
-- isAuthenticated
+- **[POST]** /ledgers/
+- permission_classes :  IsAuthenticated
 
 **request.body**
 
@@ -147,7 +150,8 @@ response
 ### [PATCH] ledgers.pk
 
 - 수정기능
-- isAuthenticated
+- **[PATCH]** /ledgers/<ledger_id>/
+- permission_classes :  IsAuthenticated
 
 request.body
 
@@ -170,7 +174,8 @@ request.body
 ### [DELETE] ledgers.pk
 
 - 삭제기능
-- isAuthenticated
+- **[DELETE]** /ledgers/<ledger_id>/
+- permission_classes :  IsAuthenticated
 
 request.body
 
@@ -192,7 +197,8 @@ request.body
 ### [PATCH] ledgers.pk.restore
 
 - 복구기능
-- isAuthenticated
+- **[PATCH]** /ledgers/<ledger_id>/restore/
+- permission_classes :  IsAuthenticated
 
 request.body
 
@@ -215,7 +221,8 @@ request.body
 
 - 가계부 리스트 보는 기능
     - 추가기능(해당 유저의 가계부만 보이게 구현)
-- isAuthenticated
+- **[GET]** /ledgers/
+- permission_classes :  IsAuthenticated
 
 request.body
 
@@ -238,7 +245,8 @@ request.body
 
 - 가계부 세부내역 보는 기능
     - 추가기능(해당 유저의 가계부만 보이게 구현)
-- isAuthenticated
+- **[GET]** /ledgers/<ledger_id>/
+- permission_classes :  IsAuthenticated
 
 request.body
 
