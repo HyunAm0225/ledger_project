@@ -1,4 +1,18 @@
-# API 설계
+# Ledger Project
+
+## Run Server
+
+```shell
+docker-compose up -d --no-deps --build
+```
+
+## Test Django Server
+```shell
+docker-compose run django python manage.py test
+```
+
+
+# API 명세
 
 ## User
 
