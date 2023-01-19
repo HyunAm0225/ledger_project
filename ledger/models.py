@@ -15,4 +15,5 @@ class Ledger(BaseModel):
     is_active = models.BooleanField(verbose_name="활성화 여부", default=True)
 
     class Meta:
-        verbose_name = "회계"
+        verbose_name = "가계부"
+        ordering = ["-created_at"]

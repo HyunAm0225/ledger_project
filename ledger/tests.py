@@ -33,7 +33,7 @@ class LedgerApiTestCase(APITestCase):
     def setUp(self):
         self.refresh_access_token(self.test_user)
 
-    def test_회계_작성(self):
+    def test_가계부_작성(self):
         ledger_info_schema = Schema(
             {
                 "id": And(int, lambda x: x > 0),
@@ -57,8 +57,8 @@ class LedgerApiTestCase(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         assert response_schema.validate(res.json())
 
-    def test_회계_수정(self):
-        self.test_회계_작성()
+    def test_가계부_수정(self):
+        self.test_가계부_작성()
         ledger = Ledger.objects.all().first()
         ledger_info_schema = Schema(
             {
@@ -85,22 +85,22 @@ class LedgerApiTestCase(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         assert response_schema.validate(res.json())
 
-    def test_회계_삭제(self):
-        self.test_회계_작성()
+    def test_가계부_삭제(self):
+        self.test_가계부_작성()
         ledger = Ledger.objects.all().first()
         res = self.client.delete(f"{self.ledger_url}{ledger.pk}/", format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(Ledger.objects.filter(is_active=False).count(), 1)
 
-    def test_회계_복구(self):
-        self.test_회계_삭제()
+    def test_가계부_복구(self):
+        self.test_가계부_삭제()
         ledger = Ledger.objects.filter(is_active=False).first()
         res = self.client.patch(f"{self.ledger_url}{ledger.pk}/restore/", format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(Ledger.objects.filter(is_active=True).count(), 1)
 
-    def test_회계_리스트(self):
-        self.test_회계_작성()
+    def test_가계부_리스트(self):
+        self.test_가계부_작성()
         res = self.client.get(self.ledger_url, format="json")
         ledger_info_schema = Schema(
             {
@@ -122,8 +122,8 @@ class LedgerApiTestCase(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         assert response_schema.validate(res.json())
 
-    def test_회계_디테일(self):
-        self.test_회계_작성()
+    def test_가계부_디테일(self):
+        self.test_가계부_작성()
         ledger = Ledger.objects.filter(is_active=True).first()
         ledger_info_schema = Schema(
             {
@@ -147,7 +147,7 @@ class LedgerApiTestCase(APITestCase):
         assert response_schema.validate(res.json())
 
     def test_다른_유저로_요청(self):
-        self.test_회계_작성()
+        self.test_가계부_작성()
         ledger = Ledger.objects.filter(is_active=True).first()
         user = User.objects.create_user(email="other@test.com", password="test001!")
         self.refresh_access_token(user)
