@@ -1,10 +1,17 @@
 version: "3"
 
+
+volumes:
+  mysql_data: {}
+  mysql_data_backups: {}
+
 services:
   django:
     build:
       context: .
       dockerfile: ./docker_file/django/Dockerfile
+    depends_on:
+      - mysql
     image: ledger_server
     container_name: ledger_django_project
     volumes:
@@ -12,3 +19,15 @@ services:
     ports:
       - "8001:8001"
     command: /start
+
+  mysql:
+    build:
+      context: .
+      dockerfile: ./docker_file/mysql/Dockerfile
+    image: ledger_database
+    container_name: ledger_database
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_data_backups:/backups
+    ports:
+      - "3306:3306"
